@@ -1,0 +1,29 @@
+{
+  "name": "dneustadt/csrf-cookie-bundle",
+  "type": "symfony-bundle",
+  "description": "CSRF protection cookie for use with XHR",
+  "keywords": ["csrf", "xsrf", "security", "angular", "react", "vue.js", "axios", "ajax", "xhr"],
+  "homepage": "https://neustadt.dev",
+  "license": "MIT",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "David Neustadt",
+      "email": "d@neustadt.dev",
+      "homepage": "https://neustadt.dev"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.5",
+    "symfony/config": "^5.1",
+    "symfony/dependency-injection": "^5.1",
+    "symfony/http-foundation": "^5.1",
+    "symfony/http-kernel": "^5.1",
+    "symfony/security-csrf": "^5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dneustadt\\CsrfCookieBundle\\": ""
+    }
+  }
+}
