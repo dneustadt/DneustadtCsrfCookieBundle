@@ -17,6 +17,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+            ->booleanNode('enable')->defaultTrue()->end()
             ->scalarNode('id')->cannotBeEmpty()->defaultValue('csrf')->end()
             ->scalarNode('name')->cannotBeEmpty()->defaultValue('XSRF-TOKEN')->end()
             ->integerNode('expire')->defaultValue(0)->end()

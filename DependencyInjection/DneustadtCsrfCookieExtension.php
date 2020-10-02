@@ -16,6 +16,7 @@ class DneustadtCsrfCookieExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('dneustadt_csrf_cookie.enable', $config['enable']);
         $container->setParameter('dneustadt_csrf_cookie.id', $config['id']);
         $container->setParameter('dneustadt_csrf_cookie.name', $config['name']);
         $container->setParameter('dneustadt_csrf_cookie.expire', $config['expire']);

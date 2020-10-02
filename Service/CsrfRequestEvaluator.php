@@ -23,6 +23,11 @@ class CsrfRequestEvaluator
     protected $tokenManager;
 
     /**
+     * @var bool
+     */
+    protected $cookieEnable;
+
+    /**
      * @var string
      */
     protected $cookieId;
@@ -64,6 +69,7 @@ class CsrfRequestEvaluator
 
     public function __construct(
         CsrfTokenManagerInterface $tokenManager,
+        bool $cookieEnable,
         string $cookieId,
         string $cookieName,
         int $cookieExpire,
@@ -74,6 +80,7 @@ class CsrfRequestEvaluator
         string $cookieSameSite
     ) {
         $this->tokenManager = $tokenManager;
+        $this->cookieEnable = $cookieEnable;
         $this->cookieId = $cookieId;
         $this->cookieName = $cookieName;
         $this->cookieExpire = $cookieExpire;
@@ -146,7 +153,8 @@ class CsrfRequestEvaluator
         $attributes = $request->attributes;
         $csrf = $attributes->get('csrf');
 
-        return !is_array($csrf)
+        return $this->cookieEnable === false
+            || !is_array($csrf)
             || empty($csrf[$procedure])
             || (!empty($csrf['exclude']) && is_array($csrf['exclude']) && in_array($attributes->get('_route'), $csrf['exclude'], true))
             || (!empty($csrf['condition']) && $this->evaluateCondition($csrf['condition'], $request, $response) === false)

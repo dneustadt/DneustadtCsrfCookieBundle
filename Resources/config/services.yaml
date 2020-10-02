@@ -5,6 +5,7 @@ services:
 
     Dneustadt\CsrfCookieBundle\Service\CsrfRequestEvaluator:
         arguments:
+            $cookieEnable: '%dneustadt_csrf_cookie.enable%'
             $cookieId: '%dneustadt_csrf_cookie.id%'
             $cookieName: '%dneustadt_csrf_cookie.name%'
             $cookieExpire: '%dneustadt_csrf_cookie.expire%'
