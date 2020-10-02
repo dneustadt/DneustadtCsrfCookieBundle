@@ -6,7 +6,6 @@ namespace Dneustadt\CsrfCookieBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -22,9 +21,9 @@ class KernelEventSubscriber implements EventSubscriberInterface
     protected $tokenManager;
 
     /**
-     * @var SessionInterface
+     * @var string
      */
-    protected $session;
+    protected $cookieId;
 
     /**
      * @var string
@@ -51,22 +50,29 @@ class KernelEventSubscriber implements EventSubscriberInterface
      */
     protected $cookieSecure;
 
+    /**
+     * @var string
+     */
+    protected $cookieHeader;
+
     public function __construct(
         CsrfTokenManagerInterface $tokenManager,
-        SessionInterface $session,
+        string $cookieId,
         string $cookieName,
         int $cookieExpire,
         string $cookiePath,
         ?string $cookieDomain,
-        bool $cookieSecure
+        bool $cookieSecure,
+        string $cookieHeader
     ) {
         $this->tokenManager = $tokenManager;
-        $this->session = $session;
+        $this->cookieId = $cookieId;
         $this->cookieName = $cookieName;
         $this->cookieExpire = $cookieExpire;
         $this->cookiePath = $cookiePath;
         $this->cookieDomain = $cookieDomain;
         $this->cookieSecure = $cookieSecure;
+        $this->cookieHeader = $cookieHeader;
     }
 
     public static function getSubscribedEvents(): array
@@ -94,13 +100,13 @@ class KernelEventSubscriber implements EventSubscriberInterface
             $csrf['require'] === true
             || (is_array($csrf['require']) && in_array($event->getRequest()->getMethod(), $csrf['require'], true))
         ) {
-            $token = $event->getRequest()->headers->get('X-XSRF-TOKEN');
+            $token = $event->getRequest()->headers->get($this->cookieHeader);
 
             if (empty($token)) {
                 throw new AccessDeniedHttpException('The CSRF token is invalid. Please try to resubmit the form.');
             }
 
-            $token = new CsrfToken($this->session->getId(), $token);
+            $token = new CsrfToken($this->cookieId, $token);
 
             if (!$this->tokenManager->isTokenValid($token)) {
                 throw new AccessDeniedHttpException('The CSRF token is invalid. Please try to resubmit the form.');
@@ -129,7 +135,7 @@ class KernelEventSubscriber implements EventSubscriberInterface
                 new Cookie(
                     'XSRF-TOKEN',
                     $this->tokenManager
-                        ->getToken($this->session->getId())
+                        ->refreshToken($this->cookieId)
                         ->getValue(),
                     $this->cookieExpire === 0 ? $this->cookieExpire : time() + $this->cookieExpire,
                     $this->cookiePath,

@@ -16,11 +16,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+            ->scalarNode('id')->cannotBeEmpty()->defaultValue('csrf')->end()
             ->scalarNode('name')->cannotBeEmpty()->defaultValue('XSRF-TOKEN')->end()
             ->integerNode('expire')->defaultValue(0)->end()
             ->scalarNode('path')->cannotBeEmpty()->defaultValue('/')->end()
             ->scalarNode('domain')->cannotBeEmpty()->defaultValue(null)->end()
             ->booleanNode('secure')->defaultFalse()->end()
+            ->scalarNode('header')->cannotBeEmpty()->defaultValue('X-XSRF-TOKEN')->end()
             ->end();
 
         return $treeBuilder;

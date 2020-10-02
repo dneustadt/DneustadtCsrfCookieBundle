@@ -5,10 +5,12 @@ services:
 
     Dneustadt\CsrfCookieBundle\EventSubscriber\KernelEventSubscriber:
         arguments:
+            $cookieId: '%dneustadt_csrf_cookie.id%'
             $cookieName: '%dneustadt_csrf_cookie.name%'
             $cookieExpire: '%dneustadt_csrf_cookie.expire%'
             $cookiePath: '%dneustadt_csrf_cookie.path%'
             $cookieDomain: '%dneustadt_csrf_cookie.domain%'
             $cookieSecure: '%dneustadt_csrf_cookie.secure%'
+            $cookieHeader: '%dneustadt_csrf_cookie.header%'
         tags:
             - { name: 'event_subscriber' }
