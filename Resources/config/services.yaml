@@ -3,7 +3,7 @@ services:
         autowire: true
         autoconfigure: true
 
-    Dneustadt\CsrfCookieBundle\EventSubscriber\KernelEventSubscriber:
+    Dneustadt\CsrfCookieBundle\Service\CsrfRequestEvaluator:
         arguments:
             $cookieId: '%dneustadt_csrf_cookie.id%'
             $cookieName: '%dneustadt_csrf_cookie.name%'
@@ -13,5 +13,11 @@ services:
             $cookieSecure: '%dneustadt_csrf_cookie.secure%'
             $cookieHeader: '%dneustadt_csrf_cookie.header%'
             $cookieSameSite: '%dneustadt_csrf_cookie.sameSite%'
+
+    Dneustadt\CsrfCookieBundle\EventSubscriber\KernelEventSubscriber:
         tags:
             - { name: 'event_subscriber' }
+
+    Dneustadt\CsrfCookieBundle\Form\Extension\DisableCsrfExtension:
+        tags:
+            - { name: 'form.type_extension', alias: 'form', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
