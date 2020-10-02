@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Dneustadt\CsrfCookieBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -92,67 +95,77 @@ class KernelEventSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        $attributes = $event->getRequest()->attributes;
-        $csrf = $attributes->get('csrf');
+        $csrf = $event->getRequest()->attributes->get('csrf');
 
         if (
-            empty($csrf)
-            || empty($csrf['create'])
-            || (!empty($csrf['exclude']) && is_array($csrf['exclude']) && in_array($attributes->get('_route'), $csrf['exclude'], true))
+            !is_array($csrf)
+            || $this->isCsrfDisabled($csrf, 'require', $event->getRequest(), $event->getResponse())
         ) {
             return;
         }
 
-        if (
-            $csrf['require'] === true
-            || (is_array($csrf['require']) && in_array($event->getRequest()->getMethod(), $csrf['require'], true))
-        ) {
-            $token = $event->getRequest()->headers->get($this->cookieHeader);
+        $token = $event->getRequest()->headers->get($this->cookieHeader);
 
-            if (empty($token)) {
-                throw new AccessDeniedHttpException('The CSRF token is invalid. Please try to resubmit the form.');
-            }
+        if (empty($token)) {
+            throw new AccessDeniedHttpException('The CSRF token is invalid. Please try to resubmit the form.');
+        }
 
-            $token = new CsrfToken($this->cookieId, $token);
+        $token = new CsrfToken($this->cookieId, $token);
 
-            if (!$this->tokenManager->isTokenValid($token)) {
-                throw new AccessDeniedHttpException('The CSRF token is invalid. Please try to resubmit the form.');
-            }
+        if (!$this->tokenManager->isTokenValid($token)) {
+            throw new AccessDeniedHttpException('The CSRF token is invalid. Please try to resubmit the form.');
         }
     }
 
     public function onKernelResponse(ResponseEvent $event): void
     {
-        $attributes = $event->getRequest()->attributes;
-        $csrf = $attributes->get('csrf');
+        $csrf = $event->getRequest()->attributes->get('csrf');
 
         if (
-            empty($csrf)
-            || empty($csrf['create'])
-            || (!empty($csrf['exclude']) && is_array($csrf['exclude']) && in_array($attributes->get('_route'), $csrf['exclude'], true))
+            !is_array($csrf)
+            || $this->isCsrfDisabled($csrf, 'create', $event->getRequest(), $event->getResponse())
         ) {
             return;
         }
 
-        if (
-            $csrf['create'] === true
-            || (is_array($csrf['create']) && in_array($event->getRequest()->getMethod(), $csrf['create'], true))
-        ) {
-            $event->getResponse()->headers->setCookie(
-                new Cookie(
-                    'XSRF-TOKEN',
-                    $this->tokenManager
-                        ->refreshToken($this->cookieId)
-                        ->getValue(),
-                    $this->cookieExpire === 0 ? $this->cookieExpire : time() + $this->cookieExpire,
-                    $this->cookiePath,
-                    $this->cookieDomain,
-                    $this->cookieSecure,
-                    false,
-                    false,
-                    $this->cookieSameSite
-                )
-            );
-        }
+        $event->getResponse()->headers->setCookie(
+            new Cookie(
+                'XSRF-TOKEN',
+                $this->tokenManager
+                    ->refreshToken($this->cookieId)
+                    ->getValue(),
+                $this->cookieExpire === 0 ? $this->cookieExpire : time() + $this->cookieExpire,
+                $this->cookiePath,
+                $this->cookieDomain,
+                $this->cookieSecure,
+                false,
+                false,
+                $this->cookieSameSite
+            )
+        );
+    }
+
+    private function isCsrfDisabled(array $csrf, string $procedure, Request $request, ?Response $response): bool
+    {
+        $attributes = $request->attributes;
+
+        return empty($csrf[$procedure])
+            || (!empty($csrf['exclude']) && is_array($csrf['exclude']) && in_array($attributes->get('_route'), $csrf['exclude'], true))
+            || (!empty($csrf['condition']) && $this->evaluateCondition($csrf['condition'], $request, $response) === false)
+            || (is_array($csrf[$procedure]) && !in_array($request->getMethod(), $csrf['require'], true))
+        ;
+    }
+
+    private function evaluateCondition(string $condition, Request $request, ?Response $response): bool
+    {
+        $expressionLanguage = new ExpressionLanguage();
+
+        return (bool) $expressionLanguage->evaluate(
+            $condition,
+            [
+                'request' => $request,
+                'response' => $response,
+            ]
+        );
     }
 }
