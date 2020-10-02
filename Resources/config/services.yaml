@@ -12,5 +12,6 @@ services:
             $cookieDomain: '%dneustadt_csrf_cookie.domain%'
             $cookieSecure: '%dneustadt_csrf_cookie.secure%'
             $cookieHeader: '%dneustadt_csrf_cookie.header%'
+            $cookieSameSite: '%dneustadt_csrf_cookie.sameSite%'
         tags:
             - { name: 'event_subscriber' }

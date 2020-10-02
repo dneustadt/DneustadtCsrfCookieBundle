@@ -23,6 +23,7 @@ class DneustadtCsrfCookieExtension extends Extension
         $container->setParameter('dneustadt_csrf_cookie.domain', $config['domain']);
         $container->setParameter('dneustadt_csrf_cookie.secure', $config['secure']);
         $container->setParameter('dneustadt_csrf_cookie.header', $config['header']);
+        $container->setParameter('dneustadt_csrf_cookie.sameSite', $config['sameSite']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');

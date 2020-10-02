@@ -55,6 +55,11 @@ class KernelEventSubscriber implements EventSubscriberInterface
      */
     protected $cookieHeader;
 
+    /**
+     * @var string
+     */
+    protected $cookieSameSite;
+
     public function __construct(
         CsrfTokenManagerInterface $tokenManager,
         string $cookieId,
@@ -63,7 +68,8 @@ class KernelEventSubscriber implements EventSubscriberInterface
         string $cookiePath,
         ?string $cookieDomain,
         bool $cookieSecure,
-        string $cookieHeader
+        string $cookieHeader,
+        string $cookieSameSite
     ) {
         $this->tokenManager = $tokenManager;
         $this->cookieId = $cookieId;
@@ -73,6 +79,7 @@ class KernelEventSubscriber implements EventSubscriberInterface
         $this->cookieDomain = $cookieDomain;
         $this->cookieSecure = $cookieSecure;
         $this->cookieHeader = $cookieHeader;
+        $this->cookieSameSite = $cookieSameSite;
     }
 
     public static function getSubscribedEvents(): array
@@ -143,7 +150,7 @@ class KernelEventSubscriber implements EventSubscriberInterface
                     $this->cookieSecure,
                     false,
                     false,
-                    Cookie::SAMESITE_LAX
+                    $this->cookieSameSite
                 )
             );
         }

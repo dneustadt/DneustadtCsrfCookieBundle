@@ -6,6 +6,7 @@ namespace Dneustadt\CsrfCookieBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class Configuration implements ConfigurationInterface
 {
@@ -23,6 +24,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('domain')->cannotBeEmpty()->defaultValue(null)->end()
             ->booleanNode('secure')->defaultFalse()->end()
             ->scalarNode('header')->cannotBeEmpty()->defaultValue('X-XSRF-TOKEN')->end()
+            ->scalarNode('sameSite')->cannotBeEmpty()->defaultValue(Cookie::SAMESITE_LAX)->end()
             ->end();
 
         return $treeBuilder;
