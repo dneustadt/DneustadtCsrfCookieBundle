@@ -102,7 +102,9 @@ class CsrfRequestEvaluator
 
     public function isTokenValid(Request $request, bool $throwException = true): bool
     {
-        $token = $request->headers->get($this->cookieHeader);
+        $token = $request->headers->has($this->cookieHeader) ?
+            $request->headers->get($this->cookieHeader) :
+            $request->cookies->get($this->cookieHeader);
 
         if (empty($token)) {
             if ($throwException === false) {
