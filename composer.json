@@ -5,7 +5,6 @@
   "keywords": ["csrf", "xsrf", "security", "angular", "react", "vue.js", "axios", "ajax", "xhr"],
   "homepage": "https://neustadt.dev",
   "license": "MIT",
-  "version": "1.0.0",
   "authors": [
     {
       "name": "David Neustadt",
