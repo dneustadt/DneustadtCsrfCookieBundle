@@ -135,7 +135,7 @@ class CsrfRequestEvaluator
 
         $response->headers->setCookie(
             new Cookie(
-                'XSRF-TOKEN',
+                $this->cookieName,
                 $this->tokenManager
                     ->refreshToken($this->cookieId)
                     ->getValue(),
