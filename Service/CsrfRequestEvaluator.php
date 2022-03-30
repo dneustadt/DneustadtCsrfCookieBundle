@@ -160,7 +160,7 @@ class CsrfRequestEvaluator
             || empty($csrf[$procedure])
             || (!empty($csrf['exclude']) && is_array($csrf['exclude']) && in_array($attributes->get('_route'), $csrf['exclude'], true))
             || (!empty($csrf['condition']) && $this->evaluateCondition($csrf['condition'], $request, $response) === false)
-            || (is_array($csrf[$procedure]) && !in_array($request->getMethod(), $csrf[self::REQUIRE], true))
+            || (is_array($csrf[$procedure]) && !in_array($request->getMethod(), $csrf[$procedure], true))
         ;
     }
 
