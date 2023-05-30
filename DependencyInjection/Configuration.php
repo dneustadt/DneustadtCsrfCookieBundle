@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('dneustadt_csrf_cookie');
         $rootNode = $treeBuilder->getRootNode();
@@ -18,14 +18,14 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->booleanNode('enable')->defaultTrue()->end()
-            ->scalarNode('id')->cannotBeEmpty()->defaultValue('csrf')->end()
-            ->scalarNode('name')->cannotBeEmpty()->defaultValue('XSRF-TOKEN')->end()
+            ->scalarNode('id')->defaultValue('csrf')->end()
+            ->scalarNode('name')->defaultValue('XSRF-TOKEN')->end()
             ->integerNode('expire')->defaultValue(0)->end()
-            ->scalarNode('path')->cannotBeEmpty()->defaultValue('/')->end()
-            ->scalarNode('domain')->cannotBeEmpty()->defaultValue(null)->end()
+            ->scalarNode('path')->defaultValue('/')->end()
+            ->scalarNode('domain')->defaultNull()->end()
             ->booleanNode('secure')->defaultFalse()->end()
-            ->scalarNode('header')->cannotBeEmpty()->defaultValue('X-XSRF-TOKEN')->end()
-            ->scalarNode('sameSite')->cannotBeEmpty()->defaultValue(Cookie::SAMESITE_LAX)->end()
+            ->scalarNode('header')->defaultValue('X-XSRF-TOKEN')->end()
+            ->scalarNode('sameSite')->defaultValue(Cookie::SAMESITE_LAX)->end()
             ->end();
 
         return $treeBuilder;
