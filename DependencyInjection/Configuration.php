@@ -18,14 +18,14 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
             ->booleanNode('enable')->defaultTrue()->end()
-            ->scalarNode('id')->defaultValue('csrf')->end()
-            ->scalarNode('name')->defaultValue('XSRF-TOKEN')->end()
+            ->scalarNode('id')->cannotBeEmpty()->defaultValue('csrf')->end()
+            ->scalarNode('name')->cannotBeEmpty()->defaultValue('XSRF-TOKEN')->end()
             ->integerNode('expire')->defaultValue(0)->end()
-            ->scalarNode('path')->defaultValue('/')->end()
+            ->scalarNode('path')->cannotBeEmpty()->defaultValue('/')->end()
             ->scalarNode('domain')->defaultNull()->end()
             ->booleanNode('secure')->defaultFalse()->end()
-            ->scalarNode('header')->defaultValue('X-XSRF-TOKEN')->end()
-            ->scalarNode('sameSite')->defaultValue(Cookie::SAMESITE_LAX)->end()
+            ->scalarNode('header')->cannotBeEmpty()->defaultValue('X-XSRF-TOKEN')->end()
+            ->scalarNode('sameSite')->cannotBeEmpty()->defaultValue(Cookie::SAMESITE_LAX)->end()
             ->end();
 
         return $treeBuilder;
