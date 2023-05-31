@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('dneustadt_csrf_cookie');
         $rootNode = $treeBuilder->getRootNode();
@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('name')->cannotBeEmpty()->defaultValue('XSRF-TOKEN')->end()
             ->integerNode('expire')->defaultValue(0)->end()
             ->scalarNode('path')->cannotBeEmpty()->defaultValue('/')->end()
-            ->scalarNode('domain')->cannotBeEmpty()->defaultValue(null)->end()
+            ->scalarNode('domain')->defaultNull()->end()
             ->booleanNode('secure')->defaultFalse()->end()
             ->scalarNode('header')->cannotBeEmpty()->defaultValue('X-XSRF-TOKEN')->end()
             ->scalarNode('sameSite')->cannotBeEmpty()->defaultValue(Cookie::SAMESITE_LAX)->end()
