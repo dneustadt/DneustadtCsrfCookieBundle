@@ -55,6 +55,11 @@ class CsrfRequestEvaluator
     /**
      * @var bool
      */
+    protected $cookieHttpOnly;
+
+    /**
+     * @var bool
+     */
     protected $cookieSecure;
 
     /**
@@ -75,6 +80,7 @@ class CsrfRequestEvaluator
         int $cookieExpire,
         string $cookiePath,
         ?string $cookieDomain,
+        bool $cookieHttpOnly,
         bool $cookieSecure,
         string $cookieHeader,
         string $cookieSameSite
@@ -86,6 +92,7 @@ class CsrfRequestEvaluator
         $this->cookieExpire = $cookieExpire;
         $this->cookiePath = $cookiePath;
         $this->cookieDomain = $cookieDomain;
+        $this->cookieHttpOnly = $cookieHttpOnly;
         $this->cookieSecure = $cookieSecure;
         $this->cookieHeader = $cookieHeader;
         $this->cookieSameSite = $cookieSameSite;
@@ -143,7 +150,7 @@ class CsrfRequestEvaluator
                 $this->cookiePath,
                 $this->cookieDomain,
                 $this->cookieSecure,
-                false,
+                $this->cookieHttpOnly,
                 false,
                 $this->cookieSameSite
             )

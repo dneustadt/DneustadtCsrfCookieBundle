@@ -22,6 +22,7 @@ class DneustadtCsrfCookieExtension extends Extension
         $container->setParameter('dneustadt_csrf_cookie.expire', $config['expire']);
         $container->setParameter('dneustadt_csrf_cookie.path', $config['path']);
         $container->setParameter('dneustadt_csrf_cookie.domain', $config['domain']);
+        $container->setParameter('dneustadt_csrf_cookie.httpOnly', $config['httpOnly']);
         $container->setParameter('dneustadt_csrf_cookie.secure', $config['secure']);
         $container->setParameter('dneustadt_csrf_cookie.header', $config['header']);
         $container->setParameter('dneustadt_csrf_cookie.sameSite', $config['sameSite']);
