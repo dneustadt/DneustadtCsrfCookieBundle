@@ -40,6 +40,8 @@ dneustadt_csrf_cookie:
     path: /
     # Cookie domain
     domain: null
+    # Cookie HttpOnly
+    httpOnly: true
     # Cookie secure
     secure: false
     # Name of the HTTP header the token is expected to be stored in

@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
             ->integerNode('expire')->defaultValue(0)->end()
             ->scalarNode('path')->cannotBeEmpty()->defaultValue('/')->end()
             ->scalarNode('domain')->defaultNull()->end()
+            ->booleanNode('httpOnly')->defaultFalse()->end()
             ->booleanNode('secure')->defaultFalse()->end()
             ->scalarNode('header')->cannotBeEmpty()->defaultValue('X-XSRF-TOKEN')->end()
             ->scalarNode('sameSite')->cannotBeEmpty()->defaultValue(Cookie::SAMESITE_LAX)->end()
